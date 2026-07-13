@@ -9,6 +9,7 @@ public sealed class TrayIconService : IDisposable
     private readonly MainWindow window;
     private readonly NotifyIcon notifyIcon;
     private readonly ToolStripMenuItem pauseMenuItem;
+    private readonly Icon? applicationIcon;
     private bool disposed;
 
     public TrayIconService(MainWindow window)
@@ -28,9 +29,10 @@ public sealed class TrayIconService : IDisposable
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(exitMenuItem);
 
+        applicationIcon = LoadApplicationIcon();
         notifyIcon = new NotifyIcon
         {
-            Icon = SystemIcons.Application,
+            Icon = applicationIcon ?? SystemIcons.Application,
             Text = "ClipHistory 历史剪贴板",
             ContextMenuStrip = menu,
             Visible = true,
@@ -56,7 +58,24 @@ public sealed class TrayIconService : IDisposable
         notifyIcon.Visible = false;
         notifyIcon.ContextMenuStrip?.Dispose();
         notifyIcon.Dispose();
+        applicationIcon?.Dispose();
         GC.SuppressFinalize(this);
+    }
+
+    private static Icon? LoadApplicationIcon()
+    {
+        try
+        {
+            string? executablePath = Environment.ProcessPath;
+            return string.IsNullOrWhiteSpace(executablePath)
+                ? null
+                : Icon.ExtractAssociatedIcon(executablePath);
+        }
+        catch
+        {
+            // A tray icon must not prevent the application from starting.
+            return null;
+        }
     }
 
     private void OpenMenuItem_Click(object? sender, EventArgs e) => window.ShowFromTray();
