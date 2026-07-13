@@ -1,0 +1,42 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="AppTitle">ClipHistory - 历史剪贴板</sys:String>
+    <sys:String x:Key="SearchTip">搜索文字、文件名或文件路径</sys:String>
+    <sys:String x:Key="Pause">暂停记录</sys:String>
+    <sys:String x:Key="Resume">恢复记录</sys:String>
+    <sys:String x:Key="Settings">设置</sys:String>
+    <sys:String x:Key="HistoryHeader">剪贴板历史</sys:String>
+    <sys:String x:Key="All">全部</sys:String><sys:String x:Key="Text">文字</sys:String>
+    <sys:String x:Key="Image">图片</sys:String><sys:String x:Key="Files">文件</sys:String>
+    <sys:String x:Key="Pinned">置顶</sys:String><sys:String x:Key="Unpin">取消置顶</sys:String>
+    <sys:String x:Key="CopyAgain">再次复制</sys:String><sys:String x:Key="Delete">删除</sys:String>
+    <sys:String x:Key="Undo">撤销删除</sys:String>
+    <sys:String x:Key="Empty">暂无剪贴板记录，复制一些文字、图片或文件试试。</sys:String>
+    <sys:String x:Key="Recording">正在记录剪贴板</sys:String>
+    <sys:String x:Key="SettingsTitle">ClipHistory 设置</sys:String>
+    <sys:String x:Key="RetentionLabel">普通记录保存期限</sys:String>
+    <sys:String x:Key="LanguageLabel">界面语言</sys:String>
+    <sys:String x:Key="HotKeyLabel">打开窗口快捷键</sys:String>
+    <sys:String x:Key="FollowSystem">跟随 Windows</sys:String>
+    <sys:String x:Key="Startup">开机自动启动 ClipHistory</sys:String>
+    <sys:String x:Key="SettingsNote">设置保存在本机。置顶记录不受保存期限影响。</sys:String>
+    <sys:String x:Key="Cancel">取消</sys:String><sys:String x:Key="Save">保存</sys:String>
+    <sys:String x:Key="Day1">1 天</sys:String><sys:String x:Key="Day3">3 天</sys:String><sys:String x:Key="Day5">5 天</sys:String>
+    <sys:String x:Key="MultipleFiles">{0} 个文件</sys:String><sys:String x:Key="MissingFile">{0}（文件不存在）</sys:String>
+    <sys:String x:Key="TrayOpen">打开 ClipHistory</sys:String><sys:String x:Key="Exit">退出</sys:String>
+    <sys:String x:Key="TrayTitle">ClipHistory 仍在运行</sys:String>
+    <sys:String x:Key="TrayMessage">剪贴板记录已转入系统托盘。请从托盘菜单选择“退出”以彻底关闭。</sys:String>
+    <sys:String x:Key="Captured">已记录新的剪贴板内容</sys:String><sys:String x:Key="ClipboardBusy">剪贴板暂时被其他程序占用，请稍后重试</sys:String>
+    <sys:String x:Key="CaptureFailed">记录失败：{0}</sys:String><sys:String x:Key="MissingCopy">无法复制：部分文件或文件夹已经不存在</sys:String>
+    <sys:String x:Key="Copied">已复制，请到目标软件按 Ctrl + V</sys:String><sys:String x:Key="CopyFailed">复制失败：{0}</sys:String>
+    <sys:String x:Key="PinnedDone">已置顶</sys:String><sys:String x:Key="UnpinnedDone">已取消置顶</sys:String>
+    <sys:String x:Key="AlreadyGone">记录已经不存在</sys:String><sys:String x:Key="DeletedUndo">记录已删除，可在 5 秒内撤销</sys:String>
+    <sys:String x:Key="Restored">已恢复删除的记录</sys:String><sys:String x:Key="PausedStatus">已暂停记录剪贴板</sys:String>
+    <sys:String x:Key="SettingsSaved">设置已保存</sys:String><sys:String x:Key="SettingsCleaned">设置已保存，并清理 {0} 条过期记录</sys:String>
+    <sys:String x:Key="SettingsFailed">保存设置失败：{0}</sys:String><sys:String x:Key="HotKeyBusy">快捷键 Ctrl + Shift + V 已被其他软件占用</sys:String>
+    <sys:String x:Key="ClearRegular">清空普通记录</sys:String><sys:String x:Key="ClearAll">清空全部（含置顶）</sys:String>
+    <sys:String x:Key="ConfirmTitle">确认清空</sys:String><sys:String x:Key="ConfirmClearRegular">确定清空全部普通记录吗？此操作不可撤销，置顶记录会保留。</sys:String>
+    <sys:String x:Key="ConfirmClearAll">确定清空包括置顶内容在内的全部记录吗？此操作不可撤销。</sys:String>
+    <sys:String x:Key="ClearedCount">已清空 {0} 条记录</sys:String>
+</ResourceDictionary>

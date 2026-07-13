@@ -1,0 +1,34 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="AppTitle">ClipHistory - Clipboard History</sys:String>
+    <sys:String x:Key="SearchTip">Search text, file names, or paths</sys:String>
+    <sys:String x:Key="Pause">Pause</sys:String><sys:String x:Key="Resume">Resume</sys:String>
+    <sys:String x:Key="Settings">Settings</sys:String><sys:String x:Key="HistoryHeader">Clipboard history</sys:String>
+    <sys:String x:Key="All">All</sys:String><sys:String x:Key="Text">Text</sys:String><sys:String x:Key="Image">Image</sys:String>
+    <sys:String x:Key="Files">Files</sys:String><sys:String x:Key="Pinned">Pin</sys:String><sys:String x:Key="Unpin">Unpin</sys:String>
+    <sys:String x:Key="CopyAgain">Copy again</sys:String><sys:String x:Key="Delete">Delete</sys:String><sys:String x:Key="Undo">Undo</sys:String>
+    <sys:String x:Key="Empty">No clipboard history yet. Copy some text, an image, or files.</sys:String>
+    <sys:String x:Key="Recording">Clipboard recording is active</sys:String>
+    <sys:String x:Key="SettingsTitle">ClipHistory Settings</sys:String><sys:String x:Key="RetentionLabel">Keep regular items for</sys:String>
+    <sys:String x:Key="LanguageLabel">Language</sys:String><sys:String x:Key="FollowSystem">Follow Windows</sys:String>
+    <sys:String x:Key="HotKeyLabel">Open-window shortcut</sys:String>
+    <sys:String x:Key="Startup">Start ClipHistory with Windows</sys:String><sys:String x:Key="SettingsNote">Settings stay on this PC. Pinned items never expire.</sys:String>
+    <sys:String x:Key="Cancel">Cancel</sys:String><sys:String x:Key="Save">Save</sys:String>
+    <sys:String x:Key="Day1">1 day</sys:String><sys:String x:Key="Day3">3 days</sys:String><sys:String x:Key="Day5">5 days</sys:String>
+    <sys:String x:Key="MultipleFiles">{0} files</sys:String><sys:String x:Key="MissingFile">{0} (missing)</sys:String>
+    <sys:String x:Key="TrayOpen">Open ClipHistory</sys:String><sys:String x:Key="Exit">Exit</sys:String>
+    <sys:String x:Key="TrayTitle">ClipHistory is still running</sys:String><sys:String x:Key="TrayMessage">Clipboard recording continues in the system tray. Choose Exit from the tray menu to quit.</sys:String>
+    <sys:String x:Key="Captured">New clipboard content saved</sys:String><sys:String x:Key="ClipboardBusy">The clipboard is busy. Try again shortly.</sys:String>
+    <sys:String x:Key="CaptureFailed">Capture failed: {0}</sys:String><sys:String x:Key="MissingCopy">Cannot copy: one or more files no longer exist</sys:String>
+    <sys:String x:Key="Copied">Copied. Press Ctrl + V in the target app.</sys:String><sys:String x:Key="CopyFailed">Copy failed: {0}</sys:String>
+    <sys:String x:Key="PinnedDone">Pinned</sys:String><sys:String x:Key="UnpinnedDone">Unpinned</sys:String>
+    <sys:String x:Key="AlreadyGone">This item no longer exists</sys:String><sys:String x:Key="DeletedUndo">Item deleted. Undo is available for 5 seconds.</sys:String>
+    <sys:String x:Key="Restored">Item restored</sys:String><sys:String x:Key="PausedStatus">Clipboard recording is paused</sys:String>
+    <sys:String x:Key="SettingsSaved">Settings saved</sys:String><sys:String x:Key="SettingsCleaned">Settings saved; {0} expired items removed</sys:String>
+    <sys:String x:Key="SettingsFailed">Could not save settings: {0}</sys:String><sys:String x:Key="HotKeyBusy">Ctrl + Shift + V is already used by another app</sys:String>
+    <sys:String x:Key="ClearRegular">Clear regular items</sys:String><sys:String x:Key="ClearAll">Clear all (including pinned)</sys:String>
+    <sys:String x:Key="ConfirmTitle">Confirm clear</sys:String><sys:String x:Key="ConfirmClearRegular">Clear all regular items? This cannot be undone. Pinned items will remain.</sys:String>
+    <sys:String x:Key="ConfirmClearAll">Clear all items, including pinned items? This cannot be undone.</sys:String>
+    <sys:String x:Key="ClearedCount">Cleared {0} items</sys:String>
+</ResourceDictionary>
