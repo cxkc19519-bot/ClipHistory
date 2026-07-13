@@ -1,0 +1,4 @@
+interface:
+  display_name: "ClipHistory 开发流程"
+  short_description: "按小步、日志、测试和发布规范推进 ClipHistory"
+  default_prompt: "Use $cliphistory-development to continue the next safe, verifiable ClipHistory development step."
