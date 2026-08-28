@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using ClipHistory.App.Clipboard;
 using ClipHistory.App.Integration;
@@ -24,10 +25,13 @@ public partial class MainWindow : Window, IDisposable
     private readonly ClipboardMonitor clipboardMonitor;
     private readonly GlobalHotKeyService globalHotKeyService;
     private readonly DispatcherTimer undoTimer;
+    private readonly DispatcherTimer autoHideTimer;
+    private readonly DispatcherTimer collapseGraceTimer;
     private HistoryItem? pendingUndo;
     private bool isPaused;
     private bool disposed;
     private bool exitRequested;
+    private bool isModalDialogOpen;
     private AppSettings settings;
 
     public MainWindow(
@@ -50,14 +54,20 @@ public partial class MainWindow : Window, IDisposable
 
         undoTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
         undoTimer.Tick += UndoTimer_Tick;
+        autoHideTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+        autoHideTimer.Tick += AutoHideTimer_Tick;
+        collapseGraceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(350) };
+        collapseGraceTimer.Tick += CollapseGraceTimer_Tick;
         clipboardMonitor = new ClipboardMonitor(this, OnClipboardChanged);
         globalHotKeyService = new GlobalHotKeyService(
             this,
-            ShowFromTray,
+            TogglePanelFromHotKey,
             () => StatusText.Text = LocalizationService.Get("HotKeyBusy"),
             settings.HotKey);
         Closing += MainWindow_Closing;
         Closed += MainWindow_Closed;
+        Loaded += MainWindow_Loaded;
+        PositionTopCenter();
         RefreshHistory();
     }
 
@@ -78,6 +88,8 @@ public partial class MainWindow : Window, IDisposable
 
         disposed = true;
         undoTimer.Stop();
+        autoHideTimer.Stop();
+        collapseGraceTimer.Stop();
         globalHotKeyService.Dispose();
         clipboardMonitor.Dispose();
         GC.SuppressFinalize(this);
@@ -91,11 +103,122 @@ public partial class MainWindow : Window, IDisposable
             WindowState = WindowState.Normal;
         }
 
+        ExpandPanel(startAutoHideCountdown: true);
         Activate();
-        Topmost = true;
-        Topmost = false;
         Focus();
     }
+
+    public void TogglePanelFromHotKey()
+    {
+        if (isModalDialogOpen)
+        {
+            Activate();
+            return;
+        }
+
+        if (IsVisible && RootPanel.Visibility == Visibility.Visible)
+        {
+            CollapsePanel();
+            return;
+        }
+
+        ShowFromTray();
+    }
+
+    private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
+    {
+        StartAutoHideCountdown();
+    }
+
+    private void PositionTopCenter()
+    {
+        Rect workArea = SystemParameters.WorkArea;
+        Left = workArea.Left + (workArea.Width - Width) / 2;
+        Top = workArea.Top;
+    }
+
+    private void ExpandPanel(bool startAutoHideCountdown)
+    {
+        collapseGraceTimer.Stop();
+        HandleTab.Visibility = Visibility.Collapsed;
+        RootPanel.Visibility = Visibility.Visible;
+        if (startAutoHideCountdown)
+        {
+            StartAutoHideCountdown();
+        }
+        else
+        {
+            autoHideTimer.Stop();
+        }
+    }
+
+    private void CollapsePanel()
+    {
+        autoHideTimer.Stop();
+        collapseGraceTimer.Stop();
+        RootPanel.Visibility = Visibility.Collapsed;
+        HandleTab.Visibility = Visibility.Visible;
+    }
+
+    private void StartAutoHideCountdown()
+    {
+        autoHideTimer.Stop();
+        autoHideTimer.Start();
+    }
+
+    private void RootGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        collapseGraceTimer.Stop();
+        autoHideTimer.Stop();
+        if (RootPanel.Visibility != Visibility.Visible)
+        {
+            ExpandPanel(startAutoHideCountdown: false);
+        }
+    }
+
+    private void RootGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        collapseGraceTimer.Stop();
+        collapseGraceTimer.Start();
+    }
+
+    private void CollapseGraceTimer_Tick(object? sender, EventArgs e)
+    {
+        collapseGraceTimer.Stop();
+        if (isModalDialogOpen || Mouse.Captured is not null || FilterBox.IsDropDownOpen)
+        {
+            return;
+        }
+
+        CollapsePanel();
+    }
+
+    private void AutoHideTimer_Tick(object? sender, EventArgs e)
+    {
+        autoHideTimer.Stop();
+        if (RootGrid.IsMouseOver || isModalDialogOpen || Mouse.Captured is not null || FilterBox.IsDropDownOpen)
+        {
+            return;
+        }
+
+        CollapsePanel();
+    }
+
+    private void TryCollapseIfMouseOutside()
+    {
+        if (isModalDialogOpen || RootGrid.IsMouseOver)
+        {
+            return;
+        }
+
+        CollapsePanel();
+    }
+
+    private void FilterBox_DropDownClosed(object sender, EventArgs e) => TryCollapseIfMouseOutside();
+
+    private void SearchBox_ContextMenuClosing(object sender, ContextMenuEventArgs e) => TryCollapseIfMouseOutside();
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 
     public void TogglePause()
     {
@@ -244,50 +367,59 @@ public partial class MainWindow : Window, IDisposable
 
     private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        SettingsWindow window = new(settings) { Owner = this };
-        bool? result = window.ShowDialog();
-        if (window.RequestedClear is not null)
-        {
-            ClearHistory(window.RequestedClear.Value);
-            return;
-        }
-
-        if (result != true)
-        {
-            return;
-        }
-
+        isModalDialogOpen = true;
         try
         {
-            HotKeyOption previousHotKey = settings.HotKey;
-            if (!globalHotKeyService.TryChange(window.Settings.HotKey))
+            SettingsWindow window = new(settings) { Owner = this };
+            bool? result = window.ShowDialog();
+            if (window.RequestedClear is not null)
             {
-                StatusText.Text = LocalizationService.Get("HotKeyBusy");
+                ClearHistory(window.RequestedClear.Value);
                 return;
             }
 
-            startupService.SetEnabled(window.Settings.StartWithWindows);
+            if (result != true)
+            {
+                return;
+            }
+
             try
             {
-                settingsStore.Save(window.Settings);
-                settings = window.Settings;
+                HotKeyOption previousHotKey = settings.HotKey;
+                if (!globalHotKeyService.TryChange(window.Settings.HotKey))
+                {
+                    StatusText.Text = LocalizationService.Get("HotKeyBusy");
+                    return;
+                }
+
+                startupService.SetEnabled(window.Settings.StartWithWindows);
+                try
+                {
+                    settingsStore.Save(window.Settings);
+                    settings = window.Settings;
+                }
+                catch
+                {
+                    _ = globalHotKeyService.TryChange(previousHotKey);
+                    throw;
+                }
+                LocalizationService.Apply(settings.Language);
+                HistoryCleanupResult cleanup = new HistoryCleanupService(repository, imageFileStore)
+                    .DeleteExpired(settings.RetentionPeriod, DateTimeOffset.UtcNow);
+                StatusText.Text = cleanup.DeletedItemCount == 0
+                    ? LocalizationService.Get("SettingsSaved")
+                    : LocalizationService.Format("SettingsCleaned", cleanup.DeletedItemCount);
+                RefreshHistory();
             }
-            catch
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
             {
-                _ = globalHotKeyService.TryChange(previousHotKey);
-                throw;
+                StatusText.Text = LocalizationService.Format("SettingsFailed", exception.Message);
             }
-            LocalizationService.Apply(settings.Language);
-            HistoryCleanupResult cleanup = new HistoryCleanupService(repository, imageFileStore)
-                .DeleteExpired(settings.RetentionPeriod, DateTimeOffset.UtcNow);
-            StatusText.Text = cleanup.DeletedItemCount == 0
-                ? LocalizationService.Get("SettingsSaved")
-                : LocalizationService.Format("SettingsCleaned", cleanup.DeletedItemCount);
-            RefreshHistory();
         }
-        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        finally
         {
-            StatusText.Text = LocalizationService.Format("SettingsFailed", exception.Message);
+            isModalDialogOpen = false;
+            TryCollapseIfMouseOutside();
         }
     }
 

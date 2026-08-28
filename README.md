@@ -24,6 +24,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/Build-Installer.ps
 
 运行后可以：
 
+- 以悬浮面板形式固定在屏幕顶部居中，鼠标靠近自动展开、移开自动收起；
 - 自动记录文字、图片、文件和文件夹；
 - 按时间倒序查看，置顶内容优先；
 - 搜索文字、文件名和路径，并按类型筛选；

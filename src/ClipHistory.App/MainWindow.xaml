@@ -2,139 +2,163 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{DynamicResource AppTitle}"
-        Width="880" Height="680" MinWidth="640" MinHeight="480"
-        Background="#F5F9FD" WindowStartupLocation="CenterScreen">
+        Width="440" Height="560"
+        WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="True">
     <Window.Resources>
         <Style TargetType="Button">
-            <Setter Property="Padding" Value="12,7" />
+            <Setter Property="Padding" Value="9,4" />
             <Setter Property="Margin" Value="4,0,0,0" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="Background" Value="#E2F1FF" />
             <Setter Property="BorderBrush" Value="#A9D3F7" />
             <Setter Property="Foreground" Value="#1F2937" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
         <Style TargetType="TextBox">
-            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="FontSize" Value="13" />
             <Setter Property="BorderBrush" Value="#B8D9F5" />
         </Style>
     </Window.Resources>
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" LastChildFill="True">
-            <Button DockPanel.Dock="Right" Content="{DynamicResource Settings}" Click="SettingsButton_Click" />
-            <Button x:Name="PauseButton" DockPanel.Dock="Right" Content="{DynamicResource Pause}" Click="PauseButton_Click" />
-            <Grid>
-                <TextBox x:Name="SearchBox"
-                         Padding="12,8,40,8"
-                         FontSize="15"
-                         TextChanged="SearchBox_TextChanged"
-                         ToolTip="{DynamicResource SearchTip}" />
-                <Viewbox Width="19"
-                         Height="19"
-                         Margin="0,0,13,0"
-                         HorizontalAlignment="Right"
-                         VerticalAlignment="Center"
-                         IsHitTestVisible="False">
-                    <Canvas Width="24" Height="24">
-                        <Ellipse Canvas.Left="3"
-                                 Canvas.Top="3"
-                                 Width="13"
-                                 Height="13"
-                                 Stroke="#6B91AC"
-                                 StrokeThickness="2" />
-                        <Line X1="14"
-                              Y1="14"
-                              X2="21"
-                              Y2="21"
-                              Stroke="#6B91AC"
-                              StrokeThickness="2"
-                              StrokeStartLineCap="Round"
-                              StrokeEndLineCap="Round" />
-                    </Canvas>
-                </Viewbox>
+    <Grid x:Name="RootGrid" MouseEnter="RootGrid_MouseEnter" MouseLeave="RootGrid_MouseLeave">
+        <Border x:Name="HandleTab"
+                Width="132" Height="20"
+                HorizontalAlignment="Center" VerticalAlignment="Top"
+                Background="#B375B8F7" BorderBrush="#8FC3EF" BorderThickness="1,0,1,1"
+                CornerRadius="0,0,10,10" Cursor="Hand"
+                Visibility="Collapsed"
+                ToolTip="{DynamicResource TrayOpen}">
+            <TextBlock Text="▼" FontSize="9" Margin="0,0,0,3"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="#24577A" />
+        </Border>
+        <Border x:Name="RootPanel"
+                Background="#F5F9FD" BorderBrush="#A9D3F7" BorderThickness="1"
+                CornerRadius="0,0,14,14">
+            <Grid Margin="14,12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" LastChildFill="True">
+                    <Button DockPanel.Dock="Right" Padding="7,4" Content="✕"
+                            ToolTip="{DynamicResource HideToTray}" Click="CloseButton_Click" />
+                    <Button DockPanel.Dock="Right" Content="{DynamicResource Settings}" Click="SettingsButton_Click" />
+                    <Button x:Name="PauseButton" DockPanel.Dock="Right" Content="{DynamicResource Pause}" Click="PauseButton_Click" />
+                    <Grid>
+                        <TextBox x:Name="SearchBox"
+                                 Padding="9,6,34,6"
+                                 FontSize="13"
+                                 TextChanged="SearchBox_TextChanged"
+                                 ContextMenuClosing="SearchBox_ContextMenuClosing"
+                                 ToolTip="{DynamicResource SearchTip}" />
+                        <Viewbox Width="16"
+                                 Height="16"
+                                 Margin="0,0,11,0"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Center"
+                                 IsHitTestVisible="False">
+                            <Canvas Width="24" Height="24">
+                                <Ellipse Canvas.Left="3"
+                                         Canvas.Top="3"
+                                         Width="13"
+                                         Height="13"
+                                         Stroke="#6B91AC"
+                                         StrokeThickness="2" />
+                                <Line X1="14"
+                                      Y1="14"
+                                      X2="21"
+                                      Y2="21"
+                                      Stroke="#6B91AC"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round" />
+                            </Canvas>
+                        </Viewbox>
+                    </Grid>
+                </DockPanel>
+                <DockPanel Grid.Row="1" Margin="0,10" LastChildFill="False">
+                    <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="15"
+                               FontWeight="SemiBold" Foreground="#24577A" Text="{DynamicResource HistoryHeader}" />
+                    <ComboBox x:Name="FilterBox" DockPanel.Dock="Right" Width="108" FontSize="12" SelectedIndex="0"
+                              SelectionChanged="FilterBox_SelectionChanged" DropDownClosed="FilterBox_DropDownClosed">
+                        <ComboBoxItem Tag="All" Content="{DynamicResource All}" />
+                        <ComboBoxItem Tag="Text" Content="{DynamicResource Text}" />
+                        <ComboBoxItem Tag="Image" Content="{DynamicResource Image}" />
+                        <ComboBoxItem Tag="Files" Content="{DynamicResource Files}" />
+                        <ComboBoxItem Tag="Pinned" Content="{DynamicResource Pinned}" />
+                    </ComboBox>
+                </DockPanel>
+                <Grid Grid.Row="2">
+                    <ListBox ItemsSource="{Binding HistoryCards}" Background="Transparent" BorderThickness="0"
+                             HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0,0,0,6" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="10" Background="White" BorderBrush="#D8EAF8"
+                                        BorderThickness="1" CornerRadius="8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                                <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#377AA8" Text="{Binding TypeLabel}" />
+                                                <TextBlock FontSize="11" Margin="8,0,0,0" Foreground="#7B8794" Text="{Binding TimeText}" />
+                                                <TextBlock FontSize="11" Margin="8,0,0,0" Foreground="#E09A2D" Text="📌"
+                                                           Visibility="{Binding PinVisibility}" />
+                                            </StackPanel>
+                                            <Image MaxHeight="120" MaxWidth="240" HorizontalAlignment="Left"
+                                                   Stretch="Uniform" Source="{Binding ImageSource}">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ImageSource}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <TextBlock MaxHeight="64" FontSize="12" Text="{Binding Preview}" TextWrapping="Wrap"
+                                                       TextTrimming="CharacterEllipsis" Foreground="#1F2937" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                            <Button Tag="{Binding Id}" Content="{DynamicResource CopyAgain}" Click="CopyButton_Click" />
+                                            <Button Margin="4,6,0,0" Tag="{Binding Id}" Content="{Binding PinButtonText}"
+                                                    Click="PinButton_Click" />
+                                            <Button Margin="4,6,0,0" Tag="{Binding Id}" Content="{DynamicResource Delete}" Foreground="#B43C3C"
+                                                    Click="DeleteButton_Click" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               FontSize="13" Foreground="#7B8794"
+                               Text="{DynamicResource Empty}" Visibility="Collapsed" />
+                </Grid>
+                <Border Grid.Row="3" Margin="0,8,0,0" Padding="9,6" Background="#E2F1FF" CornerRadius="8">
+                    <DockPanel>
+                        <Button x:Name="UndoButton" DockPanel.Dock="Right" Content="{DynamicResource Undo}"
+                                Click="UndoButton_Click" Visibility="Collapsed" />
+                        <TextBlock x:Name="StatusText" FontSize="12" VerticalAlignment="Center" Foreground="#24577A"
+                                   Text="{DynamicResource Recording}" />
+                    </DockPanel>
+                </Border>
             </Grid>
-        </DockPanel>
-        <DockPanel Grid.Row="1" Margin="0,12" LastChildFill="False">
-            <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" FontSize="22"
-                       FontWeight="SemiBold" Foreground="#24577A" Text="{DynamicResource HistoryHeader}" />
-            <ComboBox x:Name="FilterBox" DockPanel.Dock="Right" Width="130" SelectedIndex="0"
-                      SelectionChanged="FilterBox_SelectionChanged">
-                <ComboBoxItem Tag="All" Content="{DynamicResource All}" />
-                <ComboBoxItem Tag="Text" Content="{DynamicResource Text}" />
-                <ComboBoxItem Tag="Image" Content="{DynamicResource Image}" />
-                <ComboBoxItem Tag="Files" Content="{DynamicResource Files}" />
-                <ComboBoxItem Tag="Pinned" Content="{DynamicResource Pinned}" />
-            </ComboBox>
-        </DockPanel>
-        <Grid Grid.Row="2">
-            <ListBox ItemsSource="{Binding HistoryCards}" Background="Transparent" BorderThickness="0"
-                     HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="0" />
-                        <Setter Property="Margin" Value="0,0,0,10" />
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border Padding="16" Background="White" BorderBrush="#D8EAF8"
-                                BorderThickness="1" CornerRadius="10">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                        <TextBlock FontWeight="SemiBold" Foreground="#377AA8" Text="{Binding TypeLabel}" />
-                                        <TextBlock Margin="10,0,0,0" Foreground="#7B8794" Text="{Binding TimeText}" />
-                                        <TextBlock Margin="10,0,0,0" Foreground="#E09A2D" Text="📌"
-                                                   Visibility="{Binding PinVisibility}" />
-                                    </StackPanel>
-                                    <Image MaxHeight="180" MaxWidth="360" HorizontalAlignment="Left"
-                                           Stretch="Uniform" Source="{Binding ImageSource}">
-                                        <Image.Style>
-                                            <Style TargetType="Image">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ImageSource}" Value="{x:Null}">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Image.Style>
-                                    </Image>
-                                    <TextBlock MaxHeight="110" Text="{Binding Preview}" TextWrapping="Wrap"
-                                               TextTrimming="CharacterEllipsis" Foreground="#1F2937" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Margin="16,0,0,0">
-                                    <Button Tag="{Binding Id}" Content="{DynamicResource CopyAgain}" Click="CopyButton_Click" />
-                                    <Button Margin="4,8,0,0" Tag="{Binding Id}" Content="{Binding PinButtonText}"
-                                            Click="PinButton_Click" />
-                                    <Button Margin="4,8,0,0" Tag="{Binding Id}" Content="{DynamicResource Delete}" Foreground="#B43C3C"
-                                            Click="DeleteButton_Click" />
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <TextBlock x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center"
-                       FontSize="17" Foreground="#7B8794"
-                       Text="{DynamicResource Empty}" Visibility="Collapsed" />
-        </Grid>
-        <Border Grid.Row="3" Margin="0,10,0,0" Padding="12" Background="#E2F1FF" CornerRadius="8">
-            <DockPanel>
-                <Button x:Name="UndoButton" DockPanel.Dock="Right" Content="{DynamicResource Undo}"
-                        Click="UndoButton_Click" Visibility="Collapsed" />
-                <TextBlock x:Name="StatusText" VerticalAlignment="Center" Foreground="#24577A"
-                           Text="{DynamicResource Recording}" />
-            </DockPanel>
         </Border>
     </Grid>
 </Window>

@@ -18,6 +18,7 @@
     <sys:String x:Key="Day1">1 day</sys:String><sys:String x:Key="Day3">3 days</sys:String><sys:String x:Key="Day5">5 days</sys:String>
     <sys:String x:Key="MultipleFiles">{0} files</sys:String><sys:String x:Key="MissingFile">{0} (missing)</sys:String>
     <sys:String x:Key="TrayOpen">Open ClipHistory</sys:String><sys:String x:Key="Exit">Exit</sys:String>
+    <sys:String x:Key="HideToTray">Hide to tray</sys:String>
     <sys:String x:Key="TrayTitle">ClipHistory is still running</sys:String><sys:String x:Key="TrayMessage">Clipboard recording continues in the system tray. Choose Exit from the tray menu to quit.</sys:String>
     <sys:String x:Key="Captured">New clipboard content saved</sys:String><sys:String x:Key="ClipboardBusy">The clipboard is busy. Try again shortly.</sys:String>
     <sys:String x:Key="CaptureFailed">Capture failed: {0}</sys:String><sys:String x:Key="MissingCopy">Cannot copy: one or more files no longer exist</sys:String>
